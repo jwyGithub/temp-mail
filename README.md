@@ -27,14 +27,14 @@
 </p>
 
 ## 在线演示
+
 [https://moemail.app](https://moemail.app)
 
-![首页](https://pic.otaku.ren/20241209/AQADwsUxG9k1uVZ-.jpg "首页")
+![首页](https://pic.otaku.ren/20241209/AQADwsUxG9k1uVZ-.jpg '首页')
 
+![邮箱](https://pic.otaku.ren/20241209/AQADw8UxG9k1uVZ-.jpg '邮箱')
 
-![邮箱](https://pic.otaku.ren/20241209/AQADw8UxG9k1uVZ-.jpg "邮箱")
-
-![个人中心](https://pic.otaku.ren/20241227/AQADVsIxG7OzcFd-.jpg "个人中心")
+![个人中心](https://pic.otaku.ren/20241227/AQADVsIxG7OzcFd-.jpg '个人中心')
 
 ## 特性
 
@@ -75,31 +75,38 @@
 ### 安装
 
 1. 克隆仓库：
+
 ```bash
 git clone https://github.com/beilunyang/moemail.git
 cd moemail
 ```
 
 2. 安装依赖：
+
 ```bash
 pnpm install
 ```
 
 3. 设置 wrangler：
+
 ```bash
 cp wrangler.example.json wrangler.json
 cp wrangler.email.example.json wrangler.email.json
 cp wrangler.cleanup.example.json wrangler.cleanup.json
 ```
+
 设置 Cloudflare D1 数据库名以及数据库 ID
 
 4. 设置环境变量：
+
 ```bash
 cp .env.example .env.local
 ```
+
 设置 AUTH_GITHUB_ID, AUTH_GITHUB_SECRET, AUTH_SECRET
 
 5. 创建本地数据库表结构
+
 ```bash
 pnpm db:migrate-local
 ```
@@ -107,39 +114,48 @@ pnpm db:migrate-local
 ### 开发
 
 1. 启动开发服务器：
+
 ```bash
 pnpm dev
 ```
 
-2. 测试邮件 worker：
-目前无法本地运行并测试，请使用 wrangler 部署邮件 worker 并测试
+2. 测试邮件 worker：目前无法本地运行并测试，请使用 wrangler 部署邮件 worker 并测试
+
 ```bash
 pnpm deploy:email
 ```
 
 3. 测试清理 worker：
+
 ```bash
 pnpm dev:cleanup
 pnpm test:cleanup
 ```
 
 4. 生成 Mock 数据（邮箱以及邮件消息）
+
 ```bash
 pnpm generate-test-data
 ```
+
 ## 部署
 
 ### 视频版保姆级部署教程
+
 https://www.bilibili.com/video/BV19wrXY2ESM/
 
 ### 本地 Wrangler 部署
+
 1. 创建 .env 文件
+
 ```bash
 cp .env.example .env
 ```
+
 2. 在 .env 文件中设置[环境变量](#环境变量)
 
 3. 运行部署脚本
+
 ```bash
 pnpm dlx tsx ./scripts/deploy/index.ts
 ```
@@ -154,45 +170,47 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 #### 部署步骤
 
 1. 在 GitHub 仓库设置中添加以下 Secrets：
-   - `CLOUDFLARE_API_TOKEN`: Cloudflare API 令牌
-   - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare 账户 ID
-   - `AUTH_GITHUB_ID`: GitHub OAuth App ID
-   - `AUTH_GITHUB_SECRET`: GitHub OAuth App Secret
-   - `AUTH_SECRET`: NextAuth Secret，用来加密 session，请设置一个随机字符串
-   - `CUSTOM_DOMAIN`: 网站自定义域名，用于访问 MoeMail (可选， 如果不填, 则会使用 Cloudflare Pages 默认域名)
-   - `PROJECT_NAME`: Pages 项目名 （可选，如果不填，则为 moemail） 
-   - `DATABASE_NAME`: D1 数据库名称 (可选，如果不填，则为 moemail-db)
-   - `KV_NAMESPACE_NAME`: Cloudflare KV namespace 名称，用于存储网站配置 （可选，如果不填，则为 moemail-kv）
+
+    - `CLOUDFLARE_API_TOKEN`: Cloudflare API 令牌
+    - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare 账户 ID
+    - `AUTH_GITHUB_ID`: GitHub OAuth App ID
+    - `AUTH_GITHUB_SECRET`: GitHub OAuth App Secret
+    - `AUTH_SECRET`: NextAuth Secret，用来加密 session，请设置一个随机字符串
+    - `CUSTOM_DOMAIN`: 网站自定义域名，用于访问 MoeMail (可选， 如果不填, 则会使用 Cloudflare Pages 默认域名)
+    - `PROJECT_NAME`: Pages 项目名 （可选，如果不填，则为 moemail）
+    - `DATABASE_NAME`: D1 数据库名称 (可选，如果不填，则为 moemail-db)
+    - `KV_NAMESPACE_NAME`: Cloudflare KV namespace 名称，用于存储网站配置 （可选，如果不填，则为 moemail-kv）
 
 2. 选择触发方式：
 
-   **方式一：推送 tag 触发**
-   ```bash
-   # 创建新的 tag
-   git tag v1.0.0
-   
-   # 推送 tag 到远程仓库
-   git push origin v1.0.0
-   ```
+    **方式一：推送 tag 触发**
 
-   **方式二：手动触发**
-   - 进入仓库的 Actions 页面
-   - 选择 "Deploy" workflow
-   - 点击 "Run workflow"
+    ```bash
+    # 创建新的 tag
+    git tag v1.0.0
+
+    # 推送 tag 到远程仓库
+    git push origin v1.0.0
+    ```
+
+    **方式二：手动触发**
+
+    - 进入仓库的 Actions 页面
+    - 选择 "Deploy" workflow
+    - 点击 "Run workflow"
 
 3. 部署进度可以在仓库的 Actions 标签页查看
 
 #### 注意事项
+
 - 确保所有 Secrets 都已正确设置
 - 使用 tag 触发时，tag 必须以 `v` 开头（例如：v1.0.0）
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/beilunyang/moemail)
 
-
 ## 邮箱域名配置
 
-在 MoeMail 个人中心页面，可以配置网站的邮箱域名，支持多域名配置，多个域名用逗号分隔
-![邮箱域名配置](https://pic.otaku.ren/20241227/AQAD88AxG67zeVd-.jpg "邮箱域名配置")
+在 MoeMail 个人中心页面，可以配置网站的邮箱域名，支持多域名配置，多个域名用逗号分隔 ![邮箱域名配置](https://pic.otaku.ren/20241227/AQAD88AxG67zeVd-.jpg '邮箱域名配置')
 
 ### Cloudflare 邮件路由配置
 
@@ -201,19 +219,17 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 1. 登录 [Cloudflare 控制台](https://dash.cloudflare.com/)
 2. 选择您的域名
 3. 点击左侧菜单的 "电子邮件" -> "电子邮件路由"
-4. 如果显示 “电子邮件路由当前被禁用，没有在路由电子邮件”，请点击 "启用电子邮件路由"
-![启用电子邮件路由](https://pic.otaku.ren/20241223/AQADNcQxG_K0SVd-.jpg "启用电子邮件路由")
-5. 点击后，会提示你添加电子邮件路由 DNS 记录，点击 “添加记录并启用” 即可
-![添加电子邮件路由 DNS 记录](https://pic.otaku.ren/20241223/AQADN8QxG_K0SVd-.jpg "添加电子邮件路由 DNS 记录")
+4. 如果显示 “电子邮件路由当前被禁用，没有在路由电子邮件”，请点击 "启用电子邮件路由" ![启用电子邮件路由](https://pic.otaku.ren/20241223/AQADNcQxG_K0SVd-.jpg '启用电子邮件路由')
+5. 点击后，会提示你添加电子邮件路由 DNS 记录，点击 “添加记录并启用” 即可 ![添加电子邮件路由 DNS 记录](https://pic.otaku.ren/20241223/AQADN8QxG_K0SVd-.jpg '添加电子邮件路由 DNS 记录')
 6. 配置路由规则：
-   - Catch-all 地址: 启用 "Catch-all"
-   - 编辑 Catch-all 地址
+    - Catch-all 地址: 启用 "Catch-all"
+    - 编辑 Catch-all 地址
     - 操作: 选择 "发送到 Worker"
     - 目标位置: 选择刚刚部署的 "email-receiver-worker"
-    - 保存
-  ![配置路由规则](https://pic.otaku.ren/20241223/AQADNsQxG_K0SVd-.jpg "配置路由规则")
+    - 保存 ![配置路由规则](https://pic.otaku.ren/20241223/AQADNsQxG_K0SVd-.jpg '配置路由规则')
 
 ### 注意事项
+
 - 确保域名的 DNS 托管在 Cloudflare
 - Email Worker 必须已经部署成功
 - 如果 Catch-All 状态不可用(一直 loading)，请点击`路由规则`旁边的`目标地址`, 进去绑定一个邮箱
@@ -225,6 +241,7 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 ### 角色配置
 
 新用户默认角色由皇帝在个人中心的网站设置中配置：
+
 - 公爵：新用户将获得临时邮箱、Webhook 配置权限以及 API Key 管理权限
 - 骑士：新用户将获得临时邮箱和 Webhook 配置权限
 - 平民：新用户无任何权限，需要等待皇帝册封为骑士或公爵
@@ -234,36 +251,40 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 系统包含四个角色等级：
 
 1. **皇帝（Emperor）**
-   - 网站所有者
-   - 拥有所有权限
-   - 每个站点只能有一个皇帝
 
-2. **公爵（Duke）**  
-   - 超级用户
-   - 可以使用临时邮箱功能
-   - 可以配置 Webhook
-   - 可以使用创建 API Key 调用 OpenAPI
-   - 可以被皇帝贬为骑士或平民
+    - 网站所有者
+    - 拥有所有权限
+    - 每个站点只能有一个皇帝
+
+2. **公爵（Duke）**
+
+    - 超级用户
+    - 可以使用临时邮箱功能
+    - 可以配置 Webhook
+    - 可以使用创建 API Key 调用 OpenAPI
+    - 可以被皇帝贬为骑士或平民
 
 3. **骑士（Knight）**
-   - 高级用户
-   - 可以使用临时邮箱功能
-   - 可以配置 Webhook
-   - 可以被皇帝贬为平民或册封为公爵
 
-3. **平民（Civilian）**
-   - 普通用户
-   - 无任何权限
-   - 可以被皇帝册封为骑士或者公爵
+    - 高级用户
+    - 可以使用临时邮箱功能
+    - 可以配置 Webhook
+    - 可以被皇帝贬为平民或册封为公爵
+
+4. **平民（Civilian）**
+    - 普通用户
+    - 无任何权限
+    - 可以被皇帝册封为骑士或者公爵
 
 ### 角色升级
 
 1. **成为皇帝**
-   - 第一个访问 `/api/roles/init-emperor` 接口的用户将成为皇帝，即网站所有者
-   - 站点已有皇帝后，无法再提升其他用户为皇帝
+
+    - 第一个访问 `/api/roles/init-emperor` 接口的用户将成为皇帝，即网站所有者
+    - 站点已有皇帝后，无法再提升其他用户为皇帝
 
 2. **角色变更**
-   - 皇帝可以在个人中心页面将其他用户设为公爵、骑士或平民
+    - 皇帝可以在个人中心页面将其他用户设为公爵、骑士或平民
 
 ### 权限说明
 
@@ -289,26 +310,29 @@ pnpm dlx tsx ./scripts/deploy/index.ts
 当收到新邮件时，系统会向用户配置并且已启用的 Webhook URL 发送 POST 请求。
 
 ### 请求头
+
 ```http
 Content-Type: application/json
 X-Webhook-Event: new_message
 ```
 
 ### 请求体
+
 ```json
 {
-  "emailId": "email-uuid",
-  "messageId": "message-uuid",
-  "fromAddress": "sender@example.com",
-  "subject": "邮件主题",
-  "content": "邮件文本内容",
-  "html": "邮件HTML内容",
-  "receivedAt": "2024-01-01T12:00:00.000Z",
-  "toAddress": "your-email@moemail.app"
+    "emailId": "email-uuid",
+    "messageId": "message-uuid",
+    "fromAddress": "sender@example.com",
+    "subject": "邮件主题",
+    "content": "邮件文本内容",
+    "html": "邮件HTML内容",
+    "receivedAt": "2024-01-01T12:00:00.000Z",
+    "toAddress": "your-email@moemail.app"
 }
 ```
 
 ### 配置说明
+
 1. 点击个人头像，进入个人中心
 2. 在个人中心启用 Webhook
 3. 设置接收通知的 URL
@@ -326,11 +350,13 @@ pnpm webhook-test-server
 测试服务器会在本地启动一个 HTTP 服务器，监听 3001 端口（http://localhost:3001）, 并打印收到的 Webhook 消息详情。
 
 如果需要进行外网测试，可以通过 Cloudflare Tunnel 将服务暴露到外网：
+
 ```bash
 pnpx cloudflared tunnel --url http://localhost:3001
 ```
 
 ### 注意事项
+
 - Webhook 接口应在 10 秒内响应
 - 非 2xx 响应码会触发重试
 
@@ -341,6 +367,7 @@ pnpx cloudflared tunnel --url http://localhost:3001
 ### 使用 API Key
 
 在请求头中添加 API Key：
+
 ```http
 X-API-Key: YOUR_API_KEY
 ```
@@ -348,6 +375,7 @@ X-API-Key: YOUR_API_KEY
 ### API 接口
 
 #### 创建临时邮箱
+
 ```http
 POST /api/emails/generate
 Content-Type: application/json
@@ -358,31 +386,41 @@ Content-Type: application/json
   "domain": "moemail.app"
 }
 ```
+
 参数说明：
+
 - `name`: 邮箱前缀，可选
 - `expiryTime`: 有效期（毫秒），可选值：3600000（1小时）、86400000（1天）、604800000（7天）、0（永久）
 - `domain`: 邮箱域名，可通过 `/api/emails/domains` 获取可用域名列表
 
 #### 获取邮箱列表
+
 ```http
 GET /api/emails?cursor=xxx
 ```
+
 参数说明：
+
 - `cursor`: 分页游标，可选
 
 #### 获取指定邮箱邮件列表
+
 ```http
 GET /api/emails/{emailId}?cursor=xxx
 ```
+
 参数说明：
+
 - `cursor`: 分页游标，可选
 
 #### 删除邮箱
+
 ```http
 DELETE /api/emails/{emailId}
 ```
 
 #### 获取单封邮件内容
+
 ```http
 GET /api/emails/{emailId}/{messageId}
 ```
@@ -390,6 +428,7 @@ GET /api/emails/{emailId}/{messageId}
 ### 使用示例
 
 使用 curl 创建临时邮箱：
+
 ```bash
 curl -X POST https://your-domain.com/api/emails/generate \
   -H "X-API-Key: YOUR_API_KEY" \
@@ -402,11 +441,12 @@ curl -X POST https://your-domain.com/api/emails/generate \
 ```
 
 使用 JavaScript 获取邮件列表：
+
 ```javascript
 const res = await fetch('https://your-domain.com/api/emails/your-email-id', {
-  headers: {
-    'X-API-Key': 'YOUR_API_KEY'
-  }
+    headers: {
+        'X-API-Key': 'YOUR_API_KEY'
+    }
 });
 const data = await res.json();
 ```
@@ -416,11 +456,13 @@ const data = await res.json();
 本项目使用以下环境变量：
 
 ### 认证相关
+
 - `AUTH_GITHUB_ID`: GitHub OAuth App ID
 - `AUTH_GITHUB_SECRET`: GitHub OAuth App Secret
 - `AUTH_SECRET`: NextAuth Secret，用来加密 session，请设置一个随机字符串
 
 ### Cloudflare 配置
+
 - `CLOUDFLARE_API_TOKEN`: Cloudflare API Token
 - `CLOUDFLARE_ACCOUNT_ID`: Cloudflare Account ID
 - `DATABASE_NAME`: D1 数据库名称
@@ -428,7 +470,7 @@ const data = await res.json();
 - `KV_NAMESPACE_NAME`: Cloudflare KV namespace 名称，用于存储网站配置
 - `KV_NAMESPACE_ID`: Cloudflare KV namespace ID，用于存储网站配置 （可选， 如果不填, 则会自动通过 Cloudflare API 获取）
 - `CUSTOM_DOMAIN`: 网站自定义域名, 如：moemail.app (可选， 如果不填, 则会使用 Cloudflare Pages 默认域名)
-- `PROJECT_NAME`: Pages 项目名 （可选，如果不填，则为 moemail） 
+- `PROJECT_NAME`: Pages 项目名 （可选，如果不填，则为 moemail）
 
 ## Github OAuth App 配置
 
@@ -437,7 +479,6 @@ const data = await res.json();
 - 设置 `Application name` 为 `<your-app-name>`
 - 设置 `Homepage URL` 为 `https://<your-domain>`
 - 设置 `Authorization callback URL` 为 `https://<your-domain>/api/auth/callback/github`
-
 
 ## 贡献
 
@@ -448,6 +489,7 @@ const data = await res.json();
 本项目采用 [MIT](LICENSE) 许可证
 
 ## 交流
+
 <table>
   <tr style="max-width: 360px">
     <td>
@@ -469,11 +511,4 @@ const data = await res.json();
 
 ## 支持
 
-如果你喜欢这个项目，欢迎给它一个 Star ⭐️
-或者进行赞助
-<br />
-<br />
-<img src="https://pic.otaku.ren/20240212/AQADPrgxGwoIWFZ-.jpg" style="width: 400px;"/>
-<br />
-<br />
-<a href="https://www.buymeacoffee.com/beilunyang" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="width: 400px;" ></a>
+如果你喜欢这个项目，欢迎给它一个 Star ⭐️ 或者进行赞助 <br /> <br /> <img src="https://pic.otaku.ren/20240212/AQADPrgxGwoIWFZ-.jpg" style="width: 400px;"/> <br /> <br /> <a href="https://www.buymeacoffee.com/beilunyang" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="width: 400px;" ></a>
