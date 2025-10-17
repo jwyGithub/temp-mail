@@ -1,10 +1,12 @@
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { createDb } from '@/lib/db';
 import { emails, messages } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
-import { getRequestContext } from '@cloudflare/next-on-pages';
 import { checkSendPermission } from '@/lib/send-permissions';
+import { getSiteConfig } from '@/lib/siteConfig';
+import { SiteConfig } from '@/types/siteConfig';
 
 export const runtime = 'edge';
 
@@ -24,7 +26,7 @@ async function sendWithResend(to: string, subject: string, content: string, from
         body: JSON.stringify({
             from: fromEmail,
             to: [to],
-            subject: subject,
+            subject,
             html: content
         })
     });
@@ -46,7 +48,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         }
 
         const { id } = await params;
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
 
         const permissionResult = await checkSendPermission(session.user.id);
         if (!permissionResult.canSend) {
@@ -73,8 +75,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             return NextResponse.json({ error: '无权访问此邮箱' }, { status: 403 });
         }
 
-        const env = getRequestContext().env;
-        const apiKey = await env.SITE_CONFIG.get('RESEND_API_KEY');
+        const apiKey = await getSiteConfig(SiteConfig.RESEND_API_KEY, '');
 
         if (!apiKey) {
             return NextResponse.json({ error: 'Resend 发件服务未配置，请联系管理员' }, { status: 500 });

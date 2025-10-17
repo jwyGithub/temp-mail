@@ -1,9 +1,10 @@
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { and, eq, isNull, lt, ne, or, sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
+import { getUserId } from '@/lib/apiKey';
+import { decodeCursor, encodeCursor } from '@/lib/cursor';
 import { createDb } from '@/lib/db';
 import { emails, messages } from '@/lib/schema';
-import { eq, and, lt, or, sql, ne, isNull } from 'drizzle-orm';
-import { encodeCursor, decodeCursor } from '@/lib/cursor';
-import { getUserId } from '@/lib/apiKey';
 import { checkBasicSendPermission } from '@/lib/send-permissions';
 
 export const runtime = 'edge';
@@ -12,7 +13,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const userId = await getUserId();
 
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const { id } = await params;
         const email = await db.query.emails.findFirst({
             where: and(eq(emails.id, id), eq(emails.userId, userId!))
@@ -40,7 +41,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const messageType = searchParams.get('type');
 
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const { id } = await params;
 
         const userId = await getUserId();

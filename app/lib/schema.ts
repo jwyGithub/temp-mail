@@ -1,6 +1,7 @@
-import { integer, sqliteTable, text, primaryKey, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
 import type { AdapterAccountType } from 'next-auth/adapters';
+import type { SiteConfig } from '@/types/siteConfig';
 import { relations } from 'drizzle-orm';
+import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 // https://authjs.dev/getting-started/adapters/drizzle
 export const users = sqliteTable('user', {
@@ -143,6 +144,18 @@ export const apiKeys = sqliteTable(
     },
     table => ({
         nameUserIdUnique: uniqueIndex('name_user_id_unique').on(table.name, table.userId)
+    })
+);
+export const siteConfig = sqliteTable(
+    'site_config',
+    {
+        key: text('key').notNull().unique().$type<keyof typeof SiteConfig>(),
+        value: text('value').notNull(),
+        createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+        updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+    },
+    table => ({
+        keyUnique: uniqueIndex('key_unique').on(table.key)
     })
 );
 

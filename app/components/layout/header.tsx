@@ -1,6 +1,6 @@
 import { SignButton } from '@/components/auth/sign-button';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { LanguageSwitcher } from '@/components/layout/language-switcher';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Logo } from '@/components/ui/logo';
 
 export function Header() {

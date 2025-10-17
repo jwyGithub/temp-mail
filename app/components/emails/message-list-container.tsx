@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Inbox, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Send, Inbox } from 'lucide-react';
-import { Tabs, SlidingTabsList, SlidingTabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { MessageList } from './message-list';
+import { useState } from 'react';
+import { SlidingTabsList, SlidingTabsTrigger, Tabs, TabsContent } from '@/components/ui/tabs';
 import { useSendPermission } from '@/hooks/use-send-permission';
+import { MessageList } from './message-list';
 
 interface MessageListContainerProps {
     email: {
@@ -29,7 +29,8 @@ export function MessageListContainer({ email, onMessageSelect, selectedMessageId
 
     return (
         <div className='h-full flex flex-col'>
-            {canSendEmails ? (
+            {canSendEmails
+? (
                 <Tabs value={activeTab} onValueChange={handleTabChange} className='h-full flex flex-col'>
                     <div className='p-2 border-b border-primary/20'>
                         <SlidingTabsList>
@@ -63,7 +64,8 @@ export function MessageListContainer({ email, onMessageSelect, selectedMessageId
                         />
                     </TabsContent>
                 </Tabs>
-            ) : (
+            )
+: (
                 <div className='flex-1 overflow-hidden'>
                     <MessageList
                         email={email}

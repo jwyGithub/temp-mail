@@ -1,15 +1,17 @@
-import { NextResponse } from 'next/server';
-import { createDb } from '@/lib/db';
-import { messages, emails } from '@/lib/schema';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { and, eq } from 'drizzle-orm';
+import { NextResponse } from 'next/server';
 import { getUserId } from '@/lib/apiKey';
+import { createDb } from '@/lib/db';
+import { emails, messages } from '@/lib/schema';
+
 export const runtime = 'edge';
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string; messageId: string }> }) {
     const userId = await getUserId();
 
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const { id, messageId } = await params;
         const email = await db.query.emails.findFirst({
             where: and(eq(emails.id, id), eq(emails.userId, userId!))
@@ -39,7 +41,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string; messageId: string }> }) {
     try {
         const { id, messageId } = await params;
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const userId = await getUserId();
 
         const email = await db.query.emails.findFirst({

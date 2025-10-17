@@ -1,36 +1,36 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Copy, Key, Loader2, Plus, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Key, Plus, Loader2, Copy, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 import {
     Dialog,
+    DialogClose,
     DialogContent,
+    DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-    DialogDescription,
-    DialogClose
+    DialogTrigger
 } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/components/ui/use-toast';
+import { useConfig } from '@/hooks/use-config';
 import { useCopy } from '@/hooks/use-copy';
 import { useRolePermission } from '@/hooks/use-role-permission';
 import { PERMISSIONS } from '@/lib/permissions';
-import { useConfig } from '@/hooks/use-config';
 
-type ApiKey = {
+interface ApiKey {
     id: string;
     name: string;
     key: string;
     createdAt: string;
     expiresAt: string | null;
     enabled: boolean;
-};
+}
 
 export function ApiKeyPanel() {
     const t = useTranslations('profile.apiKey');
@@ -174,7 +174,8 @@ export function ApiKeyPanel() {
                                 {newKey && <DialogDescription className='text-destructive'>{t('description')}</DialogDescription>}
                             </DialogHeader>
 
-                            {!newKey ? (
+                            {!newKey
+? (
                                 <div className='space-y-4 py-4'>
                                     <div className='space-y-2'>
                                         <Label>{t('name')}</Label>
@@ -185,7 +186,8 @@ export function ApiKeyPanel() {
                                         />
                                     </div>
                                 </div>
-                            ) : (
+                            )
+: (
                                 <div className='space-y-4 py-4'>
                                     <div className='space-y-2'>
                                         <Label>{t('key')}</Label>
@@ -216,19 +218,24 @@ export function ApiKeyPanel() {
                 )}
             </div>
 
-            {!canManageApiKey ? (
+            {!canManageApiKey
+? (
                 <div className='text-center text-muted-foreground py-8'>
                     <p>{tNoPermission('needPermission')}</p>
                     <p className='mt-2'>{tNoPermission('contactAdmin')}</p>
                     {config?.adminContact && (
                         <p className='mt-2'>
-                            {tNoPermission('adminContact')}: {config.adminContact}
+                            {tNoPermission('adminContact')}
+:
+{config.adminContact}
                         </p>
                     )}
                 </div>
-            ) : (
+            )
+: (
                 <div className='space-y-4'>
-                    {isLoading ? (
+                    {isLoading
+? (
                         <div className='text-center py-8 space-y-3'>
                             <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto'>
                                 <Loader2 className='w-6 h-6 text-primary animate-spin' />
@@ -237,7 +244,9 @@ export function ApiKeyPanel() {
                                 <p className='text-sm text-muted-foreground'>{tMessages('loading')}</p>
                             </div>
                         </div>
-                    ) : apiKeys.length === 0 ? (
+                    )
+: apiKeys.length === 0
+? (
                         <div className='text-center py-8 space-y-3'>
                             <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto'>
                                 <Key className='w-6 h-6 text-primary' />
@@ -247,14 +256,17 @@ export function ApiKeyPanel() {
                                 <p className='text-sm text-muted-foreground mt-1'>{t('description')}</p>
                             </div>
                         </div>
-                    ) : (
+                    )
+: (
                         <>
                             {apiKeys.map(key => (
                                 <div key={key.id} className='flex items-center justify-between p-4 rounded-lg border bg-card'>
                                     <div className='space-y-1'>
                                         <div className='font-medium'>{key.name}</div>
                                         <div className='text-sm text-muted-foreground'>
-                                            {t('createdAt')}: {new Date(key.createdAt).toLocaleString()}
+                                            {t('createdAt')}
+:
+{new Date(key.createdAt).toLocaleString()}
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-2'>
@@ -288,8 +300,7 @@ export function ApiKeyPanel() {
                                                         copyToClipboard(
                                                             `curl ${window.location.protocol}//${window.location.host}/api/config \\
   -H "X-API-Key: YOUR_API_KEY"`
-                                                        )
-                                                    }
+                                                        )}
                                                 >
                                                     <Copy className='w-4 h-4' />
                                                 </Button>
@@ -316,8 +327,7 @@ export function ApiKeyPanel() {
     "expiryTime": 3600000,
     "domain": "moemail.app"
   }'`
-                                                        )
-                                                    }
+                                                        )}
                                                 >
                                                     <Copy className='w-4 h-4' />
                                                 </Button>
@@ -344,8 +354,7 @@ export function ApiKeyPanel() {
                                                         copyToClipboard(
                                                             `curl ${window.location.protocol}//${window.location.host}/api/emails?cursor=CURSOR \\
   -H "X-API-Key: YOUR_API_KEY"`
-                                                        )
-                                                    }
+                                                        )}
                                                 >
                                                     <Copy className='w-4 h-4' />
                                                 </Button>
@@ -366,8 +375,7 @@ export function ApiKeyPanel() {
                                                         copyToClipboard(
                                                             `curl ${window.location.protocol}//${window.location.host}/api/emails/{emailId}?cursor=CURSOR \\
   -H "X-API-Key: YOUR_API_KEY"`
-                                                        )
-                                                    }
+                                                        )}
                                                 >
                                                     <Copy className='w-4 h-4' />
                                                 </Button>
@@ -388,8 +396,7 @@ export function ApiKeyPanel() {
                                                         copyToClipboard(
                                                             `curl ${window.location.protocol}//${window.location.host}/api/emails/{emailId}/{messageId} \\
   -H "X-API-Key: YOUR_API_KEY"`
-                                                        )
-                                                    }
+                                                        )}
                                                 >
                                                     <Copy className='w-4 h-4' />
                                                 </Button>

@@ -1,9 +1,10 @@
 'use client';
 
-import { create } from 'zustand';
-import { Role, ROLES } from '@/lib/permissions';
-import { EMAIL_CONFIG } from '@/config';
+import type { Role } from '@/lib/permissions';
 import { useEffect } from 'react';
+import { create } from 'zustand';
+import { EMAIL_CONFIG } from '@/config';
+import { ROLES } from '@/lib/permissions';
 
 interface Config {
     defaultRole: Exclude<Role, typeof ROLES.EMPEROR>;
@@ -56,7 +57,7 @@ export function useConfig() {
         if (!store.config && !store.loading) {
             store.fetch();
         }
-    }, [store.config, store.loading]);
+    }, [store, store.config, store.loading]);
 
     return store;
 }

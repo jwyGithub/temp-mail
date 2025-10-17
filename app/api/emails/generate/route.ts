@@ -1,27 +1,28 @@
-import { NextResponse } from 'next/server';
-import { nanoid } from 'nanoid';
-import { createDb } from '@/lib/db';
-import { emails } from '@/lib/schema';
-import { eq, and, gt, sql } from 'drizzle-orm';
-import { EXPIRY_OPTIONS } from '@/types/email';
-import { EMAIL_CONFIG } from '@/config';
 import { getRequestContext } from '@cloudflare/next-on-pages';
+import { and, eq, gt, sql } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
+import { NextResponse } from 'next/server';
+import { EMAIL_CONFIG } from '@/config';
 import { getUserId } from '@/lib/apiKey';
 import { getUserRole } from '@/lib/auth';
+import { createDb } from '@/lib/db';
 import { ROLES } from '@/lib/permissions';
+import { emails } from '@/lib/schema';
+import { getSiteConfig } from '@/lib/siteConfig';
+import { EXPIRY_OPTIONS } from '@/types/email';
+import { SiteConfig } from '@/types/siteConfig';
 
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
-    const db = createDb();
-    const env = getRequestContext().env;
+    const db = createDb(getRequestContext().env.DB);
 
     const userId = await getUserId();
     const userRole = await getUserRole(userId!);
 
     try {
         if (userRole !== ROLES.EMPEROR) {
-            const maxEmails = (await env.SITE_CONFIG.get('MAX_EMAILS')) || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString();
+            const maxEmails = await getSiteConfig(SiteConfig.MAX_EMAILS, EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString());
             const activeEmailsCount = await db
                 .select({ count: sql<number>`count(*)` })
                 .from(emails)
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: '无效的过期时间' }, { status: 400 });
         }
 
-        const domainString = await env.SITE_CONFIG.get('EMAIL_DOMAINS');
+        const domainString = await getSiteConfig(SiteConfig.EMAIL_DOMAINS, '');
         const domains = domainString ? domainString.split(',') : ['moemail.app'];
 
         if (!domains || !domains.includes(domain)) {

@@ -1,10 +1,10 @@
-import { Header } from '@/components/layout/header';
-import { auth } from '@/lib/auth';
-import { Shield, Mail, Clock } from 'lucide-react';
+import type { Locale } from '@/i18n/config';
+import { Clock, Mail, Shield } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { ActionButton } from '@/components/home/action-button';
 import { FeatureCard } from '@/components/home/feature-card';
-import { getTranslations } from 'next-intl/server';
-import type { Locale } from '@/i18n/config';
+import { Header } from '@/components/layout/header';
+import { auth } from '@/lib/auth';
 
 export const runtime = 'edge';
 

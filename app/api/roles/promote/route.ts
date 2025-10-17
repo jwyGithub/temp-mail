@@ -1,8 +1,10 @@
-import { createDb } from '@/lib/db';
-import { roles, userRoles } from '@/lib/schema';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { eq } from 'drizzle-orm';
-import { ROLES } from '@/lib/permissions';
 import { assignRoleToUser } from '@/lib/auth';
+import { createDb } from '@/lib/db';
+import { ROLES } from '@/lib/permissions';
+
+import { roles, userRoles } from '@/lib/schema';
 
 export const runtime = 'edge';
 
@@ -20,7 +22,7 @@ export async function POST(request: Request) {
             return Response.json({ error: '角色不合法' }, { status: 400 });
         }
 
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
 
         const currentUserRole = await db.query.userRoles.findFirst({
             where: eq(userRoles.userId, userId),

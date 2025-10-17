@@ -1,6 +1,7 @@
+import type { AuthSchema } from '@/lib/validation';
 import { NextResponse } from 'next/server';
 import { register } from '@/lib/auth';
-import { authSchema, AuthSchema } from '@/lib/validation';
+import { authSchema } from '@/lib/validation';
 
 export const runtime = 'edge';
 

@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Copy, Plus, RefreshCw } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 import { nanoid } from 'nanoid';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { EXPIRY_OPTIONS } from '@/types/email';
-import { useCopy } from '@/hooks/use-copy';
+import { useToast } from '@/components/ui/use-toast';
 import { useConfig } from '@/hooks/use-config';
+import { useCopy } from '@/hooks/use-copy';
+import { EXPIRY_OPTIONS } from '@/types/email';
 
 interface CreateDialogProps {
     onEmailCreated: () => void;
@@ -56,7 +56,7 @@ export function CreateDialog({ onEmailCreated }: CreateDialogProps) {
                 body: JSON.stringify({
                     name: emailName,
                     domain: currentDomain,
-                    expiryTime: parseInt(expiryTime)
+                    expiryTime: Number.parseInt(expiryTime)
                 })
             });
 
@@ -122,7 +122,8 @@ export function CreateDialog({ onEmailCreated }: CreateDialogProps) {
                                 <SelectContent>
                                     {config?.emailDomainsArray?.map(d => (
                                         <SelectItem key={d} value={d}>
-                                            @{d}
+                                            @
+{d}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -151,15 +152,20 @@ export function CreateDialog({ onEmailCreated }: CreateDialogProps) {
                     </div>
 
                     <div className='flex items-center gap-2 text-sm text-muted-foreground'>
-                        <span className='shrink-0'>{t('domain')}:</span>
-                        {emailName ? (
+                        <span className='shrink-0'>
+{t('domain')}
+:
+                        </span>
+                        {emailName
+? (
                             <div className='flex items-center gap-2 min-w-0'>
                                 <span className='truncate'>{`${emailName}@${currentDomain}`}</span>
                                 <div className='shrink-0 cursor-pointer hover:text-primary transition-colors' onClick={copyEmailAddress}>
                                     <Copy className='size-4' />
                                 </div>
                             </div>
-                        ) : (
+                        )
+: (
                             <span className='text-gray-400'>...</span>
                         )}
                     </div>

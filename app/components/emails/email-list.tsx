@@ -1,15 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Mail, RefreshCw, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useTranslations } from 'next-intl';
-import { CreateDialog } from './create-dialog';
-import { Mail, RefreshCw, Trash2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useThrottle } from '@/hooks/use-throttle';
-import { EMAIL_CONFIG } from '@/config';
-import { useToast } from '@/components/ui/use-toast';
+import { useEffect, useState } from 'react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,9 +14,15 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from '@/components/ui/alert-dialog';
-import { ROLES } from '@/lib/permissions';
-import { useUserRole } from '@/hooks/use-user-role';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { EMAIL_CONFIG } from '@/config';
 import { useConfig } from '@/hooks/use-config';
+import { useThrottle } from '@/hooks/use-throttle';
+import { useUserRole } from '@/hooks/use-user-role';
+import { ROLES } from '@/lib/permissions';
+import { cn } from '@/lib/utils';
+import { CreateDialog } from './create-dialog';
 
 interface Email {
     id: string;
@@ -115,7 +115,7 @@ export function EmailList({ onEmailSelect, selectedEmailId }: EmailListProps) {
 
     useEffect(() => {
         if (session) fetchEmails();
-    }, [session]);
+    }, [fetchEmails, session]);
 
     const handleDelete = async (email: Email) => {
         try {

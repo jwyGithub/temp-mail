@@ -1,7 +1,8 @@
 'use client';
 
+import type { Permission, Role } from '@/lib/permissions';
 import { useSession } from 'next-auth/react';
-import { Permission, Role, hasPermission } from '@/lib/permissions';
+import { hasPermission } from '@/lib/permissions';
 
 export function useRolePermission() {
     const { data: session } = useSession();

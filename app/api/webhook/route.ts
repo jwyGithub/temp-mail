@@ -1,8 +1,9 @@
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
 import { auth } from '@/lib/auth';
 import { createDb } from '@/lib/db';
 import { webhooks } from '@/lib/schema';
-import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 
 export const runtime = 'edge';
 
@@ -14,7 +15,7 @@ const webhookSchema = z.object({
 export async function GET() {
     const session = await auth();
 
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
     const webhook = await db.query.webhooks.findFirst({
         where: eq(webhooks.userId, session!.user!.id!)
     });
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { url, enabled } = webhookSchema.parse(body);
 
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const now = new Date();
 
         const existingWebhook = await db.query.webhooks.findFirst({

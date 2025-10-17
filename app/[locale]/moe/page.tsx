@@ -1,11 +1,10 @@
-import { Header } from '@/components/layout/header';
-import { ThreeColumnLayout } from '@/components/emails/three-column-layout';
-import { NoPermissionDialog } from '@/components/no-permission-dialog';
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { checkPermission } from '@/lib/auth';
-import { PERMISSIONS } from '@/lib/permissions';
 import type { Locale } from '@/i18n/config';
+import { redirect } from 'next/navigation';
+import { ThreeColumnLayout } from '@/components/emails/three-column-layout';
+import { Header } from '@/components/layout/header';
+import { NoPermissionDialog } from '@/components/no-permission-dialog';
+import { auth, checkPermission } from '@/lib/auth';
+import { PERMISSIONS } from '@/lib/permissions';
 
 export const runtime = 'edge';
 

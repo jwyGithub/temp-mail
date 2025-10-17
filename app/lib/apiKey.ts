@@ -1,13 +1,14 @@
+import type { User } from 'next-auth';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { and, eq, gt } from 'drizzle-orm';
+import { headers } from 'next/headers';
+import { NextResponse } from 'next/server';
+import { auth } from './auth';
 import { createDb } from './db';
 import { apiKeys } from './schema';
-import { eq, and, gt } from 'drizzle-orm';
-import { NextResponse } from 'next/server';
-import type { User } from 'next-auth';
-import { auth } from './auth';
-import { headers } from 'next/headers';
 
 async function getUserByApiKey(key: string): Promise<User | null> {
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
     const apiKey = await db.query.apiKeys.findFirst({
         where: and(eq(apiKeys.key, key), eq(apiKeys.enabled, true), gt(apiKeys.expiresAt, new Date())),
         with: {

@@ -1,14 +1,14 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
-import { i18n, type Locale } from '@/i18n/config';
 import type { Metadata, Viewport } from 'next';
+import { NextIntlClientProvider } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 import { FloatMenu } from '@/components/float-menu';
 import { ThemeProvider } from '@/components/theme/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
+import { i18n, type Locale } from '@/i18n/config';
 import { cn } from '@/lib/utils';
-import '../globals.css';
 import { Providers } from '../providers';
+import '../globals.css';
 
 export const runtime = 'edge';
 

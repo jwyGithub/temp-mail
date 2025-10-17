@@ -1,8 +1,10 @@
-import { createDb } from '@/lib/db';
-import { userRoles, roles, messages, emails } from '@/lib/schema';
-import { eq, and, gte } from 'drizzle-orm';
 import { getRequestContext } from '@cloudflare/next-on-pages';
+import { and, eq, gte } from 'drizzle-orm';
 import { EMAIL_CONFIG } from '@/config';
+import { createDb } from '@/lib/db';
+import { emails, messages, roles, userRoles } from '@/lib/schema';
+import { SiteConfig } from '@/types/siteConfig';
+import { getSiteConfig } from './siteConfig';
 
 export interface SendPermissionResult {
     canSend: boolean;
@@ -12,8 +14,7 @@ export interface SendPermissionResult {
 
 export async function checkSendPermission(userId: string, skipDailyLimitCheck = false): Promise<SendPermissionResult> {
     try {
-        const env = getRequestContext().env;
-        const enabled = await env.SITE_CONFIG.get('EMAIL_SERVICE_ENABLED');
+        const enabled = await getSiteConfig(SiteConfig.EMAIL_SERVICE_ENABLED, 'true');
 
         if (enabled !== 'true') {
             return {
@@ -37,7 +38,7 @@ export async function checkSendPermission(userId: string, skipDailyLimitCheck = 
             };
         }
 
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -72,7 +73,7 @@ export async function checkSendPermission(userId: string, skipDailyLimitCheck = 
 
 async function getUserDailyLimit(userId: string): Promise<number> {
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
 
         const userRoleData = await db
             .select({ roleName: roles.name })
@@ -82,8 +83,7 @@ async function getUserDailyLimit(userId: string): Promise<number> {
 
         const userRoleNames = userRoleData.map(r => r.roleName);
 
-        const env = getRequestContext().env;
-        const roleLimitsStr = await env.SITE_CONFIG.get('EMAIL_ROLE_LIMITS');
+        const roleLimitsStr = await getSiteConfig(SiteConfig.EMAIL_ROLE_LIMITS, '');
 
         const customLimits = roleLimitsStr ? JSON.parse(roleLimitsStr) : {};
 

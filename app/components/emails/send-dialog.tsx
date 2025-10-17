@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Send } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
 
 interface SendDialogProps {
     emailId: string;
@@ -31,7 +31,7 @@ export function SendDialog({ emailId, fromAddress, onSendSuccess }: SendDialogPr
         if (!to.trim() || !subject.trim() || !content.trim()) {
             toast({
                 title: tList('error'),
-                description: t('toPlaceholder') + ', ' + t('subjectPlaceholder') + ', ' + t('contentPlaceholder'),
+                description: `${t('toPlaceholder')}, ${t('subjectPlaceholder')}, ${t('contentPlaceholder')}`,
                 variant: 'destructive'
             });
             return;
@@ -103,7 +103,9 @@ export function SendDialog({ emailId, fromAddress, onSendSuccess }: SendDialogPr
                 </DialogHeader>
                 <div className='space-y-4 py-4'>
                     <div className='text-sm text-muted-foreground'>
-                        {t('from')}: {fromAddress}
+                        {t('from')}
+:
+{fromAddress}
                     </div>
                     <Input
                         value={to}

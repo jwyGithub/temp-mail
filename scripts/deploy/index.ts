@@ -1,9 +1,10 @@
-import { NotFoundError } from 'cloudflare';
-import 'dotenv/config';
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import process from 'node:process';
+import { NotFoundError } from 'cloudflare';
 import { createDatabase, createKVNamespace, createPages, getDatabase, getKVNamespaceList, getPages } from './cloudflare';
+import 'dotenv/config';
 
 const PROJECT_NAME = process.env.PROJECT_NAME || 'moemail';
 const DATABASE_NAME = process.env.DATABASE_NAME || 'moemail-db';

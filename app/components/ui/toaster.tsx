@@ -16,7 +16,7 @@ export function Toaster() {
 
     return (
         <ToastProvider>
-            {toasts.map(function ({
+            {toasts.map(({
                 id,
                 title,
                 description,
@@ -28,7 +28,7 @@ export function Toaster() {
                 description?: React.ReactNode;
                 action?: React.ReactNode;
                 [key: string]: any;
-            }) {
+            }) => {
                 return (
                     <Toast key={id} {...props}>
                         <div className='grid gap-1'>

@@ -1,11 +1,11 @@
-import { auth } from '@/lib/auth';
-import { createDb } from '@/lib/db';
-import { apiKeys } from '@/lib/schema';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { desc, eq } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { NextResponse } from 'next/server';
-import { checkPermission } from '@/lib/auth';
+import { auth, checkPermission } from '@/lib/auth';
+import { createDb } from '@/lib/db';
 import { PERMISSIONS } from '@/lib/permissions';
-import { desc, eq } from 'drizzle-orm';
+import { apiKeys } from '@/lib/schema';
 
 export const runtime = 'edge';
 
@@ -17,7 +17,7 @@ export async function GET() {
 
     const session = await auth();
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const keys = await db.query.apiKeys.findMany({
             where: eq(apiKeys.userId, session!.user.id!),
             orderBy: desc(apiKeys.createdAt)
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         }
 
         const key = `mk_${nanoid(32)}`;
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
 
         await db.insert(apiKeys).values({
             name,

@@ -1,10 +1,10 @@
-import { auth } from '@/lib/auth';
-import { createDb } from '@/lib/db';
-import { apiKeys } from '@/lib/schema';
+import { getRequestContext } from '@cloudflare/next-on-pages';
+import { and, eq } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-import { checkPermission } from '@/lib/auth';
+import { auth, checkPermission } from '@/lib/auth';
+import { createDb } from '@/lib/db';
 import { PERMISSIONS } from '@/lib/permissions';
-import { eq, and } from 'drizzle-orm';
+import { apiKeys } from '@/lib/schema';
 
 export const runtime = 'edge';
 
@@ -14,7 +14,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
         return NextResponse.json({ error: '权限不足' }, { status: 403 });
     }
     try {
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
         const session = await auth();
         const { id } = await params;
 
@@ -45,7 +45,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         const { id } = await params;
 
         const { enabled } = (await request.json()) as { enabled: boolean };
-        const db = createDb();
+        const db = createDb(getRequestContext().env.DB);
 
         const result = await db
             .update(apiKeys)

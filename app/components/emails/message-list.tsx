@@ -1,13 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Calendar, Mail, RefreshCw, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Mail, Calendar, RefreshCw, Trash2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useThrottle } from '@/hooks/use-throttle';
-import { EMAIL_CONFIG } from '@/config';
-import { useToast } from '@/components/ui/use-toast';
+import { useEffect, useRef, useState } from 'react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -18,6 +13,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { EMAIL_CONFIG } from '@/config';
+import { useThrottle } from '@/hooks/use-throttle';
+import { cn } from '@/lib/utils';
 
 interface Message {
     id: string;
@@ -108,6 +108,13 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
         }
     };
 
+    const stopPolling = () => {
+        if (pollTimeoutRef.current) {
+            clearInterval(pollTimeoutRef.current);
+            pollTimeoutRef.current = null;
+        }
+    };
+
     const startPolling = () => {
         stopPolling();
         pollTimeoutRef.current = setInterval(() => {
@@ -115,13 +122,6 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
                 fetchMessages();
             }
         }, EMAIL_CONFIG.POLL_INTERVAL);
-    };
-
-    const stopPolling = () => {
-        if (pollTimeoutRef.current) {
-            clearInterval(pollTimeoutRef.current);
-            pollTimeoutRef.current = null;
-        }
     };
 
     const handleRefresh = async () => {
@@ -192,7 +192,6 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
         return () => {
             stopPolling();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [email.id]);
 
     useEffect(() => {
@@ -200,7 +199,6 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
             setRefreshing(true);
             fetchMessages();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refreshTrigger]);
 
     return (
@@ -220,9 +218,12 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
                 </div>
 
                 <div className='flex-1 overflow-auto' onScroll={handleScroll}>
-                    {loading ? (
+                    {loading
+? (
                         <div className='p-4 text-center text-sm text-gray-500'>{t('loading')}</div>
-                    ) : messages.length > 0 ? (
+                    )
+: messages.length > 0
+? (
                         <div className='divide-y divide-primary/10'>
                             {messages.map(message => (
                                 <div
@@ -261,7 +262,8 @@ export function MessageList({ email, messageType, onMessageSelect, selectedMessa
                             ))}
                             {loadingMore && <div className='text-center text-sm text-gray-500 py-2'>{t('loadingMore')}</div>}
                         </div>
-                    ) : (
+                    )
+: (
                         <div className='p-4 text-center text-sm text-gray-500'>{t('noMessages')}</div>
                     )}
                 </div>

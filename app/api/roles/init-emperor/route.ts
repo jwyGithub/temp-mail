@@ -1,8 +1,9 @@
-import { auth, assignRoleToUser } from '@/lib/auth';
-import { createDb } from '@/lib/db';
-import { roles, userRoles } from '@/lib/schema';
-import { ROLES } from '@/lib/permissions';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { eq } from 'drizzle-orm';
+import { assignRoleToUser, auth } from '@/lib/auth';
+import { createDb } from '@/lib/db';
+import { ROLES } from '@/lib/permissions';
+import { roles, userRoles } from '@/lib/schema';
 
 export const runtime = 'edge';
 
@@ -12,7 +13,7 @@ export async function GET() {
         return Response.json({ error: '未授权' }, { status: 401 });
     }
 
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
 
     const emperorRole = await db.query.roles.findFirst({
         where: eq(roles.name, ROLES.EMPEROR),

@@ -1,7 +1,7 @@
 'use client';
 
+import type { Role } from '@/lib/permissions';
 import { useSession } from 'next-auth/react';
-import { Role } from '@/lib/permissions';
 import { useEffect, useState } from 'react';
 
 export function useUserRole() {

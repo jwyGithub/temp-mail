@@ -1,26 +1,33 @@
 'use client';
 
-import * as React from 'react';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const Tabs = TabsPrimitive.Root;
 
-const TabsList = React.forwardRef<React.ElementRef<typeof TabsPrimitive.List>, React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>>(
-    ({ className, ...props }, ref) => (
-        <TabsPrimitive.List
-            ref={ref}
-            className={cn('inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground', className)}
-            {...props}
-        />
-    )
+const TabsList = ({
+    ref,
+    className,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    ref?: React.RefObject<React.ElementRef<typeof TabsPrimitive.List> | null>;
+}) => (
+    <TabsPrimitive.List
+        ref={ref}
+        className={cn('inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground', className)}
+        {...props}
+    />
 );
 TabsList.displayName = TabsPrimitive.List.displayName;
 
-const TabsTrigger = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+const TabsTrigger = ({
+    ref,
+    className,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
+    ref?: React.RefObject<React.ElementRef<typeof TabsPrimitive.Trigger> | null>;
+}) => (
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
@@ -29,13 +36,16 @@ const TabsTrigger = React.forwardRef<
         )}
         {...props}
     />
-));
+);
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
-const TabsContent = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
+const TabsContent = ({
+    ref,
+    className,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content> & {
+    ref?: React.RefObject<React.ElementRef<typeof TabsPrimitive.Content> | null>;
+}) => (
     <TabsPrimitive.Content
         ref={ref}
         className={cn(
@@ -44,13 +54,17 @@ const TabsContent = React.forwardRef<
         )}
         {...props}
     />
-));
+);
 TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-const SlidingTabsList = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.List>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, children, ...props }, ref) => {
+const SlidingTabsList = ({
+    ref,
+    className,
+    children,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
+    ref?: React.RefObject<React.ElementRef<typeof TabsPrimitive.List> | null>;
+}) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
 
     const combinedRef = React.useCallback(
@@ -81,12 +95,13 @@ const SlidingTabsList = React.forwardRef<
             }
 
             if (typeof ref === 'function') {
-                ref(node);
+                (ref as (node: HTMLDivElement | null) => void)(node);
             }
         },
         [ref]
     );
 
+    // eslint-disable-next-line react/no-children-to-array
     const childrenArray = React.Children.toArray(children);
     const tabCount = childrenArray.length;
     const tabWidth = `calc(${100 / tabCount}% - ${(2 * (tabCount - 1)) / tabCount}px)`;
@@ -104,13 +119,16 @@ const SlidingTabsList = React.forwardRef<
             {children}
         </TabsPrimitive.List>
     );
-});
+};
 SlidingTabsList.displayName = 'SlidingTabsList';
 
-const SlidingTabsTrigger = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
+const SlidingTabsTrigger = ({
+    ref,
+    className,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger> & {
+    ref?: React.RefObject<React.ElementRef<typeof TabsPrimitive.Trigger> | null>;
+}) => (
     <TabsPrimitive.Trigger
         ref={ref}
         className={cn(
@@ -119,7 +137,7 @@ const SlidingTabsTrigger = React.forwardRef<
         )}
         {...props}
     />
-));
+);
 SlidingTabsTrigger.displayName = 'SlidingTabsTrigger';
 
-export { Tabs, TabsList, TabsTrigger, TabsContent, SlidingTabsList, SlidingTabsTrigger };
+export { SlidingTabsList, SlidingTabsTrigger, Tabs, TabsContent, TabsList, TabsTrigger };

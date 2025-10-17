@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
+import { useEffect, useRef, useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/components/ui/use-toast';
 
 interface Message {
@@ -188,7 +188,7 @@ export function MessageView({ emailId, messageId, messageType = 'received' }: Me
         return (
             <div className='flex flex-col items-center justify-center h-32 text-center'>
                 <p className='text-sm text-destructive mb-2'>{error}</p>
-                <button onClick={() => window.location.reload()} className='text-xs text-primary hover:underline'>
+                <button type='button' onClick={() => window.location.reload()} className='text-xs text-primary hover:underline'>
                     {t('retry')}
                 </button>
             </div>
@@ -204,16 +204,22 @@ export function MessageView({ emailId, messageId, messageType = 'received' }: Me
                 <div className='text-xs text-gray-500 space-y-1'>
                     {message.from_address && (
                         <p>
-                            {t('from')}: {message.from_address}
+                            {t('from')}
+:
+{message.from_address}
                         </p>
                     )}
                     {message.to_address && (
                         <p>
-                            {t('to')}: {message.to_address}
+                            {t('to')}
+:
+{message.to_address}
                         </p>
                     )}
                     <p>
-                        {t('time')}: {new Date(message.sent_at || message.received_at || 0).toLocaleString()}
+                        {t('time')}
+:
+{new Date(message.sent_at || message.received_at || 0).toLocaleString()}
                     </p>
                 </div>
             </div>
@@ -242,13 +248,15 @@ export function MessageView({ emailId, messageId, messageType = 'received' }: Me
             )}
 
             <div className='flex-1 overflow-auto relative'>
-                {viewMode === 'html' && message.html ? (
+                {viewMode === 'html' && message.html
+? (
                     <iframe
                         ref={iframeRef}
                         className='absolute inset-0 w-full h-full border-0 bg-transparent'
                         sandbox='allow-same-origin allow-popups'
                     />
-                ) : (
+                )
+: (
                     <div className='p-4 text-sm whitespace-pre-wrap'>{message.content}</div>
                 )}
             </div>

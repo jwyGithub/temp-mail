@@ -1,21 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, Loader2, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { useToast } from '@/components/ui/use-toast';
-import { Loader2, Send, ChevronDown, ChevronUp } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useToast } from '@/components/ui/use-toast';
 
 export function WebhookConfig() {
     const t = useTranslations('profile.webhook');
     const tCommon = useTranslations('common.actions');
     const tMessages = useTranslations('emails.messages');
-    const tApiKey = useTranslations('profile.apiKey');
     const [enabled, setEnabled] = useState(false);
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -66,7 +64,7 @@ export function WebhookConfig() {
                 title: t('saveSuccess'),
                 description: t('saveSuccess')
             });
-        } catch (_error) {
+        } catch {
             toast({
                 title: t('saveFailed'),
                 description: t('saveFailed'),
@@ -94,7 +92,7 @@ export function WebhookConfig() {
                 title: t('testSuccess'),
                 description: t('testSuccess')
             });
-        } catch (_error) {
+        } catch {
             toast({
                 title: t('testFailed'),
                 description: t('testFailed'),
@@ -161,7 +159,8 @@ export function WebhookConfig() {
                             <div className='rounded-md bg-muted p-4 text-sm space-y-3'>
                                 <p>{t('docs.intro')}</p>
                                 <pre className='bg-background p-2 rounded text-xs'>
-                                    Content-Type: application/json{'\n'}
+                                    Content-Type: application/json
+                                    {'\n'}
                                     X-Webhook-Event: new_message
                                 </pre>
 

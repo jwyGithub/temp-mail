@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { useTranslations, useLocale } from 'next-intl';
+import { Button } from '@/components/ui/button';
 import { useConfig } from '@/hooks/use-config';
 
 export function NoPermissionDialog() {
@@ -20,7 +20,9 @@ export function NoPermissionDialog() {
                         <p className='text-sm md:text-base text-muted-foreground'>{t('description')}</p>
                         {config?.adminContact && (
                             <p className='text-sm md:text-base text-muted-foreground'>
-                                {t('adminContact')}：{config.adminContact}
+                                {t('adminContact')}
+：
+{config.adminContact}
                             </p>
                         )}
                         <Button onClick={() => router.push(`/${locale}`)} className='mt-4 w-full md:w-auto'>

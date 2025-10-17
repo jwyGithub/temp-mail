@@ -1,7 +1,7 @@
-import { callWebhook } from '@/lib/webhook';
-import { WEBHOOK_CONFIG } from '@/config';
+import type { EmailMessage } from '@/lib/webhook';
 import { z } from 'zod';
-import { EmailMessage } from '@/lib/webhook';
+import { WEBHOOK_CONFIG } from '@/config';
+import { callWebhook } from '@/lib/webhook';
 
 export const runtime = 'edge';
 

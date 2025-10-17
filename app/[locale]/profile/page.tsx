@@ -1,8 +1,8 @@
+import type { Locale } from '@/i18n/config';
+import { redirect } from 'next/navigation';
 import { Header } from '@/components/layout/header';
 import { ProfileCard } from '@/components/profile/profile-card';
 import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import type { Locale } from '@/i18n/config';
 
 export const runtime = 'edge';
 

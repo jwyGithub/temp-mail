@@ -1,19 +1,19 @@
 'use client';
 
-import { User } from 'next-auth';
-import { useTranslations, useLocale } from 'next-intl';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import type { User } from 'next-auth';
+import { Crown, Gem, Github, Mail, Settings, Sword, User2 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
-import { Github, Settings, Crown, Sword, User2, Gem, Mail } from 'lucide-react';
+import { useLocale, useTranslations } from 'next-intl';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { WebhookConfig } from './webhook-config';
-import { PromotePanel } from './promote-panel';
-import { EmailServiceConfig } from './email-service-config';
+import { Button } from '@/components/ui/button';
 import { useRolePermission } from '@/hooks/use-role-permission';
 import { PERMISSIONS } from '@/lib/permissions';
-import { WebsiteConfigPanel } from './website-config-panel';
 import { ApiKeyPanel } from './api-key-panel';
+import { EmailServiceConfig } from './email-service-config';
+import { PromotePanel } from './promote-panel';
+import { WebhookConfig } from './webhook-config';
+import { WebsiteConfigPanel } from './website-config-panel';
 
 interface ProfileCardProps {
     user: User;

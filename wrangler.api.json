@@ -1,0 +1,23 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "mail-api",
+    "compatibility_date": "2024-03-20",
+    "compatibility_flags": ["nodejs_compat"],
+    "main": "workers/mail-api.ts",
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "migrations_dir": "drizzle",
+            "database_name": "janone_mail",
+            "database_id": "9a4bce1e-44db-4a2b-8444-32b2845f89b9"
+        }
+    ],
+    "triggers": {
+        "crons": ["0 * * * *"]
+    },
+    "observability": {
+        "logs": {
+            "enabled": true
+        }
+    }
+}

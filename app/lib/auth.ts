@@ -1,16 +1,20 @@
-import NextAuth from 'next-auth';
-import GitHub from 'next-auth/providers/github';
+import type { Db } from './db';
+import type { Permission, Role } from './permissions';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { createDb, Db } from './db';
-import { accounts, users, roles, userRoles } from './schema';
-import { eq } from 'drizzle-orm';
 import { getRequestContext } from '@cloudflare/next-on-pages';
-import { Permission, hasPermission, ROLES, Role } from './permissions';
+import { eq } from 'drizzle-orm';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { hashPassword, comparePassword } from '@/lib/utils';
+import GitHub from 'next-auth/providers/github';
+import { comparePassword, hashPassword } from '@/lib/utils';
 import { authSchema } from '@/lib/validation';
-import { generateAvatarUrl } from './avatar';
+import { SiteConfig } from '@/types/siteConfig';
 import { getUserId } from './apiKey';
+import { generateAvatarUrl } from './avatar';
+import { createDb } from './db';
+import { hasPermission, ROLES } from './permissions';
+import { accounts, roles, userRoles, users } from './schema';
+import { getSiteConfig } from './siteConfig';
 
 const ROLE_DESCRIPTIONS: Record<Role, string> = {
     [ROLES.EMPEROR]: '皇帝（网站所有者）',
@@ -20,7 +24,7 @@ const ROLE_DESCRIPTIONS: Record<Role, string> = {
 };
 
 const getDefaultRole = async (): Promise<Role> => {
-    const defaultRole = await getRequestContext().env.SITE_CONFIG.get('DEFAULT_ROLE');
+    const defaultRole = await getSiteConfig(SiteConfig.DEFAULT_ROLE);
 
     if (defaultRole === ROLES.DUKE || defaultRole === ROLES.KNIGHT || defaultRole === ROLES.CIVILIAN) {
         return defaultRole as Role;
@@ -58,7 +62,7 @@ export async function assignRoleToUser(db: Db, userId: string, roleId: string) {
 }
 
 export async function getUserRole(userId: string) {
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
     const userRoleRecords = await db.query.userRoles.findMany({
         where: eq(userRoles.userId, userId),
         with: { role: true }
@@ -71,7 +75,7 @@ export async function checkPermission(permission: Permission) {
 
     if (!userId) return false;
 
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
     const userRoleRecords = await db.query.userRoles.findMany({
         where: eq(userRoles.userId, userId),
         with: { role: true }
@@ -88,7 +92,7 @@ export const {
     signOut
 } = NextAuth(() => ({
     secret: process.env.AUTH_SECRET,
-    adapter: DrizzleAdapter(createDb(), {
+    adapter: DrizzleAdapter(createDb(getRequestContext().env.DB), {
         usersTable: users,
         accountsTable: accounts
     }),
@@ -112,12 +116,11 @@ export const {
 
                 try {
                     authSchema.parse({ username, password });
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                } catch (error) {
-                    throw new Error('输入格式不正确');
+                } catch (e: any) {
+                    throw new Error(e.message);
                 }
 
-                const db = createDb();
+                const db = createDb(getRequestContext().env.DB);
 
                 const user = await db.query.users.findFirst({
                     where: eq(users.username, username as string)
@@ -144,7 +147,7 @@ export const {
             if (!user.id) return;
 
             try {
-                const db = createDb();
+                const db = createDb(getRequestContext().env.DB);
                 const existingRole = await db.query.userRoles.findFirst({
                     where: eq(userRoles.userId, user.id)
                 });
@@ -176,7 +179,7 @@ export const {
                 session.user.username = token.username as string;
                 session.user.image = token.image as string;
 
-                const db = createDb();
+                const db = createDb(getRequestContext().env.DB);
                 let userRoleRecords = await db.query.userRoles.findMany({
                     where: eq(userRoles.userId, session.user.id),
                     with: { role: true }
@@ -191,7 +194,7 @@ export const {
                             userId: session.user.id,
                             roleId: role.id,
                             createdAt: new Date(),
-                            role: role
+                            role
                         }
                     ];
                 }
@@ -210,7 +213,7 @@ export const {
 }));
 
 export async function register(username: string, password: string) {
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
 
     const existing = await db.query.users.findFirst({
         where: eq(users.username, username)

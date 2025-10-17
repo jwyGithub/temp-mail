@@ -11,11 +11,5 @@
             "database_id": "${DATABASE_ID}",
             "migrations_dir": "drizzle"
         }
-    ],
-    "kv_namespaces": [
-        {
-            "binding": "SITE_CONFIG",
-            "id": "${KV_NAMESPACE_ID}"
-        }
     ]
 }

@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, Zap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Zap, Eye, EyeOff } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/components/ui/use-toast';
 
 interface EmailServiceConfig {
     enabled: boolean;
@@ -19,6 +19,7 @@ interface EmailServiceConfig {
     };
 }
 
+// eslint-disable-next-line ts/no-redeclare
 export function EmailServiceConfig() {
     const t = useTranslations('profile.emailService');
     const tCard = useTranslations('profile.card');
@@ -35,10 +36,6 @@ export function EmailServiceConfig() {
     const [showToken, setShowToken] = useState(false);
     const { toast } = useToast();
 
-    useEffect(() => {
-        fetchConfig();
-    }, []);
-
     const fetchConfig = async () => {
         try {
             const res = await fetch('/api/config/email-service');
@@ -50,6 +47,10 @@ export function EmailServiceConfig() {
             console.error('Failed to fetch email service config:', error);
         }
     };
+
+    useEffect(() => {
+        fetchConfig();
+    }, []);
 
     const handleSave = async () => {
         setLoading(true);
@@ -140,21 +141,21 @@ export function EmailServiceConfig() {
                             <Label className='text-sm font-medium'>{t('roleLimits')}</Label>
                             <div className='space-y-4'>
                                 <div className='p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg text-sm'>
-                                    <p className='font-semibold text-blue-900 mb-3 flex items-center gap-2'>
+                                    <div className='font-semibold text-blue-900 mb-3 flex items-center gap-2'>
                                         <div className='w-2 h-2 bg-blue-500 rounded-full'></div>
                                         {t('fixedRoleLimits')}
-                                    </p>
+                                    </div>
                                     <div className='space-y-2 text-blue-800'>
                                         <div className='flex items-center gap-2'>
                                             <div className='w-1.5 h-1.5 bg-green-500 rounded-full'></div>
                                             <span>
-                                                <strong>{tCard('roles.EMPEROR')}</strong> - {t('emperorLimit')}
+                                                <strong>{tCard('roles.EMPEROR')}</strong> -{t('emperorLimit')}
                                             </span>
                                         </div>
                                         <div className='flex items-center gap-2'>
                                             <div className='w-1.5 h-1.5 bg-red-500 rounded-full'></div>
                                             <span>
-                                                <strong>{tCard('roles.CIVILIAN')}</strong> - {t('civilianLimit')}
+                                                <strong>{tCard('roles.CIVILIAN')}</strong> -{t('civilianLimit')}
                                             </span>
                                         </div>
                                     </div>
@@ -225,7 +226,7 @@ export function EmailServiceConfig() {
                                                                             ...prev,
                                                                             roleLimits: {
                                                                                 ...prev.roleLimits,
-                                                                                [role.key]: parseInt(e.target.value) || 0
+                                                                                [role.key]: Number.parseInt(e.target.value) || 0
                                                                             }
                                                                         }))
                                                                     }
@@ -237,7 +238,7 @@ export function EmailServiceConfig() {
                                                                     {tSend('dailyLimitUnit')}
                                                                 </span>
                                                             </div>
-                                                            <p className='text-xs text-muted-foreground mt-1'>0 = {t('unlimited')}</p>
+                                                            <p className='text-xs text-muted-foreground mt-1'>0 ={t('unlimited')}</p>
                                                         </div>
                                                     </div>
                                                 </div>

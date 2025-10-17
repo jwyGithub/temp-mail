@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { Copy } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
+import { useCopy } from '@/hooks/use-copy';
+import { useSendPermission } from '@/hooks/use-send-permission';
+import { cn } from '@/lib/utils';
 import { EmailList } from './email-list';
 import { MessageListContainer } from './message-list-container';
 import { MessageView } from './message-view';
 import { SendDialog } from './send-dialog';
-import { cn } from '@/lib/utils';
-import { useCopy } from '@/hooks/use-copy';
-import { useSendPermission } from '@/hooks/use-send-permission';
-import { Copy } from 'lucide-react';
 
 interface Email {
     id: string;
@@ -146,6 +146,7 @@ export function ThreeColumnLayout() {
                         <div className='h-full flex flex-col'>
                             <div className={cn(headerClass, 'gap-2')}>
                                 <button
+                                    type='button'
                                     onClick={() => {
                                         setSelectedEmail(null);
                                     }}
@@ -183,7 +184,7 @@ export function ThreeColumnLayout() {
                     {mobileView === 'message' && selectedEmail && selectedMessageId && (
                         <div className='h-full flex flex-col'>
                             <div className={headerClass}>
-                                <button onClick={() => setSelectedMessageId(null)} className='text-sm text-primary'>
+                                <button type='button' onClick={() => setSelectedMessageId(null)} className='text-sm text-primary'>
                                     {t('backToMessageList')}
                                 </button>
                                 <span className='text-sm font-medium'>{t('messageContent')}</span>

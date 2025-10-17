@@ -1,7 +1,7 @@
+import type { Locale } from '@/i18n/config';
+import { redirect } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
 import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import type { Locale } from '@/i18n/config';
 
 export const runtime = 'edge';
 

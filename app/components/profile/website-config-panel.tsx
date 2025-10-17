@@ -1,14 +1,15 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
+import type { Role } from '@/lib/permissions';
 import { Settings } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import { useState, useEffect } from 'react';
-import { Role, ROLES } from '@/lib/permissions';
+import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 import { EMAIL_CONFIG } from '@/config';
+import { ROLES } from '@/lib/permissions';
 
 export function WebsiteConfigPanel() {
     const t = useTranslations('profile.website');
@@ -19,10 +20,6 @@ export function WebsiteConfigPanel() {
     const [maxEmails, setMaxEmails] = useState<string>(EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString());
     const [loading, setLoading] = useState(false);
     const { toast } = useToast();
-
-    useEffect(() => {
-        fetchConfig();
-    }, []);
 
     const fetchConfig = async () => {
         const res = await fetch('/api/config');
@@ -39,6 +36,10 @@ export function WebsiteConfigPanel() {
             setMaxEmails(data.maxEmails || EMAIL_CONFIG.MAX_ACTIVE_EMAILS.toString());
         }
     };
+
+    useEffect(() => {
+        fetchConfig();
+    }, []);
 
     const handleSave = async () => {
         setLoading(true);

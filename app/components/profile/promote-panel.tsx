@@ -1,13 +1,14 @@
 'use client';
 
+import type { Role } from '@/lib/permissions';
+import { Gem, Loader2, Sword, User2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import { Gem, Sword, User2, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
-import { ROLES, Role } from '@/lib/permissions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
+import { ROLES } from '@/lib/permissions';
 
 const roleIcons = {
     [ROLES.DUKE]: Gem,

@@ -1,9 +1,10 @@
-import { createDb } from '@/lib/db';
+import { getRequestContext } from '@cloudflare/next-on-pages';
 import { and, eq, gt, lt, or, sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
-import { emails } from '@/lib/schema';
-import { encodeCursor, decodeCursor } from '@/lib/cursor';
 import { getUserId } from '@/lib/apiKey';
+import { decodeCursor, encodeCursor } from '@/lib/cursor';
+import { createDb } from '@/lib/db';
+import { emails } from '@/lib/schema';
 
 export const runtime = 'edge';
 
@@ -15,7 +16,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get('cursor');
 
-    const db = createDb();
+    const db = createDb(getRequestContext().env.DB);
 
     try {
         const baseConditions = and(eq(emails.userId, userId!), gt(emails.expiresAt, new Date()));
