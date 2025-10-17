@@ -1,35 +1,35 @@
-import withPWA from 'next-pwa'
-import createNextIntlPlugin from 'next-intl/plugin'
+import withPWA from 'next-pwa';
+import createNextIntlPlugin from 'next-intl/plugin';
 import { setupDevPlatform } from '@cloudflare/next-on-pages/next-dev';
 
 async function setup() {
-  if (process.env.NODE_ENV === 'development') {
-    await setupDevPlatform()
-  }
+    if (process.env.NODE_ENV === 'development') {
+        await setupDevPlatform();
+    }
 }
 
-setup()
+setup();
 
-const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts')
+const withNextIntl = createNextIntlPlugin('./app/i18n/request.ts');
 
 const nextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-      },
-    ],
-  },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'avatars.githubusercontent.com'
+            }
+        ]
+    }
 };
 
 const withPWAConfigured = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-}) as any
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+    disable: process.env.NODE_ENV === 'development'
+}) as any;
 
-const configWithPWA = withPWAConfigured(nextConfig as any) as any
+const configWithPWA = withPWAConfigured(nextConfig as any) as any;
 
-export default withNextIntl(configWithPWA)
+export default withNextIntl(configWithPWA);
